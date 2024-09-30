@@ -1,0 +1,19 @@
+{
+  "name": "@repo/validation-schema",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build" : "tsc -b"
+  },
+  "exports": { 
+    "./zod-schema": "./dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "zod": "^3.23.8",
+    "@repo/typescript-config": "workspace:*"
+  }
+}
