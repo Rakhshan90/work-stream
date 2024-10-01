@@ -24,12 +24,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-// import { toast } from "@/components/ui/use-toast"
+import { toast, useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { signUpSchema, SignUpSchemaType } from "@repo/validation-schema/zod-schema"
+import { signUp } from "@/actions/userAction"
 
 export default function SignupPage() {
   const router = useRouter()
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false)
 
   const form = useForm<SignUpSchemaType>({
@@ -42,25 +44,32 @@ export default function SignupPage() {
     },
   })
 
-  function onSubmit(values: z.infer<typeof signUpSchema>) {
+  async function onSubmit(values: z.infer<typeof signUpSchema>) {
     setIsLoading(true)
-    // Here you would typically send the form data to your backend
-    console.log(values)
 
-    // Simulating an API call
+    try {
+      await signUp(values?.name, values?.email, values?.password, values?.role);
+      setIsLoading(false);
+      toast({
+        title: "Account created successfully!",
+        description: "You can now log in with your new account.",
+      })
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to sign up, try again",
+      })
+    }
+
     setTimeout(() => {
       setIsLoading(false)
-      //   toast({
-      //     title: "Account created successfully!",
-      //     description: "You can now log in with your new account.",
-      //   })
-      //   router.push("/signin") // Redirect to login page after successful signup
+      router.push("/signin")
     }, 2000)
   }
 
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <Card className="w-full max-w-md bg-slate-800 border-none text-white">
+      <Card className="w-full max-w-md bg-slate-900 border-none text-white">
         <CardHeader>
           <CardTitle className="text-3xl font-bold text-center text-blue-600">Welcome to WorkStream</CardTitle>
           <CardDescription className="text-center text-slate-200">
@@ -77,7 +86,7 @@ export default function SignupPage() {
                   <FormItem >
                     <FormLabel>Name</FormLabel>
                     <FormControl>
-                      <Input className="bg-slate-700 border-none placeholder:text-slate-200" placeholder="John Doe" {...field} />
+                      <Input className="bg-slate-800 border-none placeholder:text-slate-200" placeholder="John Doe" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -87,10 +96,10 @@ export default function SignupPage() {
                 control={form.control}
                 name="email"
                 render={({ field }) => (
-                  <FormItem className="bg-slate-800">
+                  <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input className="bg-slate-700 border-none placeholder:text-slate-200"
+                      <Input className="bg-slate-800 border-none placeholder:text-slate-200"
                         type="email" placeholder="john@example.com" {...field} />
                     </FormControl>
                     <FormMessage />
@@ -105,7 +114,7 @@ export default function SignupPage() {
                     <FormLabel>Password</FormLabel>
                     <FormControl>
                       <Input
-                        className="bg-slate-700 border-none placeholder:text-slate-200"
+                        className="bg-slate-800 border-none placeholder:text-slate-200"
                         type="password" placeholder="********" {...field} />
                     </FormControl>
                     <FormMessage />
@@ -119,19 +128,19 @@ export default function SignupPage() {
                   <FormItem>
                     <FormLabel>Role</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl className="bg-slate-700 border-none placeholder:text-slate-200">
-                        <SelectTrigger className="bg-slate-700 border-none text-slate-200 placeholder:text-slate-200">
+                      <FormControl className="bg-slate-800 border-none placeholder:text-slate-200">
+                        <SelectTrigger className="bg-slate-800 border-none text-slate-200 placeholder:text-slate-200">
                           <SelectValue placeholder="Select a role" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent>
+                      <SelectContent className="bg-slate-800 text-white border-none">
                         <SelectItem
-                          className="focus:bg-slate-600 focus:text-white"
+                          className="focus:bg-slate-900 focus:text-white"
                           value="EMPLOYEE">
                           Employee
                         </SelectItem>
                         <SelectItem
-                          className="focus:bg-slate-600 focus:text-white"
+                          className="focus:bg-slate-900 focus:text-white"
                           value="MANAGER">
                           Manager
                         </SelectItem>

@@ -12,24 +12,26 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { signIn } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export default function AppBar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false)
   const router = useRouter();
+  const session = useSession();
+  const authenticated = session.status === 'authenticated';
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-600 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4">
       <div className="container flex h-14 items-center">
         <div className="mr-4 hidden md:flex">
           <Link href="/" className="mr-6 flex items-center space-x-2">
-            <Layers className="h-6 w-6" />
-            <span className="hidden font-bold sm:inline-block">
+            <Layers className="h-6 w-6 text-white" />
+            <span className="hidden font-bold sm:inline-block text-white">
               Workstream
             </span>
           </Link>
-          <nav className="flex items-center space-x-6 text-sm font-medium">
+          <nav className="flex items-center space-x-6 text-sm font-medium text-white">
             <Link href="/features">Features</Link>
             <Link href="/pricing">Pricing</Link>
             <DropdownMenu>
@@ -55,13 +57,12 @@ export default function AppBar() {
           <SheetTrigger asChild>
             <Button
               variant="ghost"
-              className="mr-2 px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden"
-            >
-              <Menu className="h-6 w-6" />
-              <span className="sr-only">Toggle Menu</span>
+              className="mr-2 px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden">
+              <Menu className="h-6 w-6 text-white" />
+              <span className="sr-only text-white">Toggle Menu</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="pr-0">
+          <SheetContent side="left" className="pr-0 bg-slate-900 text-white">
             <MobileLink
               href="/"
               className="flex items-center"
@@ -111,10 +112,18 @@ export default function AppBar() {
             {/* Add search functionality here if needed */}
           </div>
           <nav className="flex items-center">
-            <Button onClick={()=> signIn()} variant="ghost" className="mr-2">
-              Sign In
-            </Button>
-            <Button onClick={()=> router.push('/signup')}>Sign Up</Button>
+            {authenticated ? (
+              <Button onClick={() => signOut()} variant="ghost" className="mr-2 bg-red-600 text-white">
+                Sign Out
+              </Button>
+            ) : (
+              <>
+                <Button onClick={() => signIn()} variant="ghost" className="mr-2 bg-blue-600 text-white">
+                  Sign In
+                </Button>
+                <Button onClick={() => router.push('/signup')}>Sign Up</Button>
+              </>
+            )}
           </nav>
         </div>
       </div>

@@ -1,5 +1,8 @@
 import CredentialsProvider from "next-auth/providers/credentials"
-
+import { pages } from 'next/dist/build/templates/app-page';
+import { signIn } from "next-auth/react";
+import db from '@repo/db/client';
+import bcrypt from 'bcrypt';
 
 export const authOptions = {
     providers: [
@@ -9,11 +12,25 @@ export const authOptions = {
                 username: { label: "Username", type: "text", placeholder: "jsmith@gamil.com" },
                 password: { label: "Password", type: "password" }
             },
-            async authorize(credentials, req) {
-                return {
-                    id: '1',
-                    name: 'rakhshan',
-                    email: 'rakhshan@gamil.com'
+            async authorize(credentials:any) {
+
+                const existingUser = await db.user.findFirst({
+                    where: {
+                        email: credentials?.username,
+                    }
+                });
+
+                if(existingUser){
+                    const validated = await bcrypt.compare(credentials?.password, existingUser?.password);
+                    if(validated){
+                        return {
+                            id: existingUser?.id.toString(),
+                            name: existingUser?.name,
+                            email: existingUser?.email
+                        }
+                    }
+
+                    return null;
                 }
                 // Return null if user data could not be retrieved
                 return null
@@ -28,5 +45,8 @@ export const authOptions = {
             }
             return session;
         }
+    },
+    pages: {
+        signIn: '/signin',
     }
 }

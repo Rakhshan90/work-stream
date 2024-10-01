@@ -1,8 +1,9 @@
 'use server';
 
-import db from '@repo/db/client';
+import prisma from '@repo/db/client';
 import { Role } from '@repo/db/client';
 import {signUpSchema} from '@repo/validation-schema/zod-schema';
+import bcrypt from 'bcrypt';
 
 export const signUp = async (name: string, email: string, password: string, role: Role) => {
 
@@ -21,7 +22,7 @@ export const signUp = async (name: string, email: string, password: string, role
 
 
     try {
-        const user = await db.user.findFirst({
+        const user = await prisma.user.findFirst({
             where: { email }
         });
 
@@ -31,11 +32,13 @@ export const signUp = async (name: string, email: string, password: string, role
             }
         }
 
-        await db.user.create({
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        await prisma.user.create({
             data: {
                 name,
                 email,
-                password,
+                password: hashedPassword,
                 role: role,
             }
         });
