@@ -5,8 +5,7 @@ import { authOptions } from '../config/authOptions'
 const page = async () => {
 
   const session = await getServerSession(authOptions);
-  console.log(JSON.stringify('session:', session));
-
+  
   return (
     <div className='text-white'>
       {session?.user ? (

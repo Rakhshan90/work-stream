@@ -1,0 +1,6 @@
+-- AlterTable
+ALTER TABLE "Project" ALTER COLUMN "status" DROP DEFAULT;
+
+-- AlterTable
+ALTER TABLE "Task" ALTER COLUMN "status" DROP DEFAULT,
+ALTER COLUMN "priority" DROP DEFAULT;

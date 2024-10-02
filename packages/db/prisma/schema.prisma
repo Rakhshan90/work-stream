@@ -18,7 +18,7 @@ model User {
   name      String
   email     String   @unique
   password  String
-  role      Role     // Enum for defining role as Employee or Manager
+  role      Role // Enum for defining role as Employee or Manager
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -39,7 +39,7 @@ model Project {
   description String
   startDate   DateTime
   endDate     DateTime
-  status      ProjectStatus @default(NOT_STARTED)
+  status      ProjectStatus
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
@@ -60,10 +60,10 @@ model Task {
   id          Int          @id @default(autoincrement())
   title       String
   description String
-  status      TaskStatus   @default(PENDING)
+  status      TaskStatus
   startDate   DateTime
   endDate     DateTime
-  priority    TaskPriority @default(MEDIUM)
+  priority    TaskPriority
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 
