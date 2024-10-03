@@ -5,12 +5,6 @@ import Link from "next/link"
 import { Menu, X, ChevronDown, Layers } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -33,24 +27,7 @@ export default function AppBar() {
           </Link>
           <nav className="flex items-center space-x-6 text-sm font-medium text-white">
             <Link href="/features">Features</Link>
-            <Link href="/pricing">Pricing</Link>
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center">
-                Resources
-                <ChevronDown className="ml-1 h-4 w-4" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem>
-                  <Link href="/blog">Blog</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href="/documentation">Documentation</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href="/community">Community</Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Link href="/board-list">Dashboard</Link>
           </nav>
         </div>
         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
@@ -80,28 +57,10 @@ export default function AppBar() {
                   Features
                 </MobileLink>
                 <MobileLink
-                  href="/pricing"
+                  href="/board-list"
                   onOpenChange={setIsMobileMenuOpen}
                 >
-                  Pricing
-                </MobileLink>
-                <MobileLink
-                  href="/blog"
-                  onOpenChange={setIsMobileMenuOpen}
-                >
-                  Blog
-                </MobileLink>
-                <MobileLink
-                  href="/documentation"
-                  onOpenChange={setIsMobileMenuOpen}
-                >
-                  Documentation
-                </MobileLink>
-                <MobileLink
-                  href="/community"
-                  onOpenChange={setIsMobileMenuOpen}
-                >
-                  Community
+                  Dashboard
                 </MobileLink>
               </div>
             </div>

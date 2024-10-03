@@ -28,7 +28,7 @@ export default function RootLayout({
     <html lang="en">
       <NextProvider>
         <body className={`${geistSans.variable} ${geistMono.variable}`}>
-          <AppBar />
+          {/* <AppBar /> */}
           {children}
           <Toaster />
         </body>

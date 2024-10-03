@@ -163,7 +163,7 @@ export const viewManagerProjects = async () => {
 
         return {
             message: 'Projects fetched successfully',
-            projects,
+            projects: projects || [],
         };
     } catch (error) {
         return {
@@ -199,7 +199,7 @@ export const viewEmployeeProjects = async () => {
   
       return {
         message: 'Projects fetched successfully',
-        projects,
+        projects: projects || [],
       };
     } catch (error) {
       return {
