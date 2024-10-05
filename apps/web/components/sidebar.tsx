@@ -11,7 +11,7 @@ export default function Sidebar() {
     const toggleSidebar = () => setIsOpen(!isOpen)
 
     return (
-        <div className={`h-screen bg-slate-900 px-3 py-2 border-r border-slate-600 ${isOpen ? 'w-64' : 'w-0'} transition duration-300`}>
+        <div className={`min-h-screen bg-slate-900 px-3 py-2 border-r border-slate-600 ${isOpen ? 'w-64' : 'w-0'} transition duration-600`}>
             {!isOpen && (
                 <Button onClick={toggleSidebar} className="bg-slate-800 h-6 w-6 px-1 rounded-full">
                     <ChevronRight className="font-bold" />
@@ -33,9 +33,6 @@ export default function Sidebar() {
                         </NavItem>
                         <NavItem href="/board-list" icon={<Users />}>
                             Members
-                        </NavItem>
-                        <NavItem href="/board-list" icon={<UserRoundPlus />}>
-                            Add member
                         </NavItem>
                     </div>
 

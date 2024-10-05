@@ -31,6 +31,7 @@ import {
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
+import { signOut } from "next-auth/react"
   
   export function AppbarMenu() {
     return (
@@ -109,7 +110,7 @@ import {
           </DropdownMenuItem>
           <DropdownMenuSeparator className="bg-slate-600" />
           <DropdownMenuItem className="cursor-pointer focus:bg-red-600 focus:text-slate-200">
-            <LogOut className="mr-2 h-4 w-4" />
+            <LogOut className="mr-2 h-4 w-4" onClick={()=> signOut()} />
             <span>Log out</span>
             <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
           </DropdownMenuItem>

@@ -159,6 +159,14 @@ export const viewManagerProjects = async () => {
         // Fetch projects where the user is the manager
         const projects = await db.project.findMany({
             where: { managerId: Number(session.user.id) },
+            select: {
+                id: true,
+                name: true,
+                description: true,
+                status: true,
+                startDate: true,
+                endDate: true,
+            }
         });
 
         return {

@@ -1,17 +1,24 @@
+'use client';
+
 import React from 'react'
 import { Button } from './ui/button'
 import { Bell } from 'lucide-react'
 import { AppbarMenu } from './appbar-menu'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 const DashboardAppbar = () => {
+
+    const router = useRouter();
+
   return (
     <div className='w-full px-4 py-2 bg-slate-900 border-b border-slate-600'>
         <div className="w-full flex justify-between items-center">
             <div className="flex gap-4 items-center">
-                <div className="text-slate-200 font-bold text-xl">
+                <Link href={'/'} className="text-slate-400 font-bold text-xl">
                     Workstream
-                </div>
-                <Button className='bg-blue-600 text-slate-900 
+                </Link>
+                <Button onClick={()=> router.push('/create-project-board')} className='bg-blue-600 text-slate-900 
                 hover:text-slate-200 hover:bg-slate-800'>
                     Create
                 </Button>

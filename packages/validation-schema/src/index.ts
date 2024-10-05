@@ -43,6 +43,9 @@ export const taskSchema = z.object({
     projectId: z.number({
         message: "Project ID must be in digit",
     }),
+    employeeId: z.number({
+        message: "Employee ID must be in digit",
+    }),
     title: z.string().min(2, {
         message: "Title must be at least 2 characters",
     }),
