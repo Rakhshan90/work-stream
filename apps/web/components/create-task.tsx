@@ -1,7 +1,6 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
@@ -10,7 +9,6 @@ import { Button } from "@/components/ui/button"
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -27,7 +25,6 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { taskSchema, taskSchemaType } from "@repo/validation-schema/zod-schema"
-import { ProjectStatus } from '@repo/db/client';
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { CalendarIcon, Check, ChevronsUpDown } from "lucide-react"
@@ -41,34 +38,23 @@ import {
     CommandItem,
     CommandList,
 } from "@/components/ui/command"
-const frameworks = [
-    {
-        value: 1,
-        label: "Next.js",
-    },
-    {
-        value: 2,
-        label: "SvelteKit",
-    },
-    {
-        value: 3,
-        label: "Nuxt.js",
-    },
-    {
-        value: 4,
-        label: "Remix",
-    },
-    {
-        value: 5,
-        label: "Astro",
-    },
-]
+import { getProjectEmployees } from "@/actions/userAction"
+import { createTask } from "@/actions/taskManagement"
 
 const CreateTask = ({ id }: { id: number }) => {
 
-    const router = useRouter()
     const { toast } = useToast();
     const [isLoading, setIsLoading] = useState(false)
+    const [employees, setEmployees] = useState<{ id: number, name: string, email: string }[]>([]);
+
+    const getProjectSpecificEmployees = async () => {
+        const res = await getProjectEmployees(id);
+        setEmployees(res.employees);
+    }
+
+    useEffect(() => {
+        getProjectSpecificEmployees();
+    }, []);
 
     const form = useForm<taskSchemaType>({
         resolver: zodResolver(taskSchema),
@@ -88,30 +74,27 @@ const CreateTask = ({ id }: { id: number }) => {
         setIsLoading(true)
 
         try {
-            console.log(values);
-            // const res = await createProject(values?.name, values?.description, values?.startDate, values?.endDate, values?.status);
+            const res = await createTask(values?.projectId, values?.employeeId, values?.title, values?.description, values?.startDate, values?.endDate, values?.status, values?.priority);
+
             setIsLoading(false);
-            // toast({
-            //     title: "Response message",
-            //     description: res.message,
-            // })
+            toast({
+                title: "Response message",
+                description: res.message,
+            })
         } catch (error) {
             toast({
                 title: "Error",
-                description: "Failed to create project, try again",
+                description: "Failed to create task, try again",
             })
         }
-
-        setTimeout(() => {
-            setIsLoading(false)
-            router.push("/add")
-        }, 2000)
-    }
+    }   
 
     return (
         <Card className="w-full max-w-md bg-slate-900 border-none text-white">
             <CardHeader>
-                <CardTitle className="text-3xl font-bold text-center text-blue-600">Create task</CardTitle>
+                <CardTitle className="text-3xl font-bold text-center text-blue-600">
+                    Create task
+                </CardTitle>
                 <CardDescription className="text-center text-slate-200">
                     Create a task for your project board and assign it to your team member
                 </CardDescription>
@@ -126,7 +109,7 @@ const CreateTask = ({ id }: { id: number }) => {
                                 <FormItem >
                                     {/* <FormLabel>Name</FormLabel> */}
                                     <FormControl>
-                                        <Input className="bg-slate-800 border-none placeholder:text-slate-200" placeholder="Project name" {...field} />
+                                        <Input className="bg-slate-800 border-none placeholder:text-slate-200" placeholder="Title" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -140,7 +123,7 @@ const CreateTask = ({ id }: { id: number }) => {
                                     {/* <FormLabel>Description</FormLabel> */}
                                     <FormControl>
                                         <Input className="bg-slate-800 border-none placeholder:text-slate-200"
-                                            placeholder="Description of the project" {...field} />
+                                            placeholder="Description of the task" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -163,8 +146,8 @@ const CreateTask = ({ id }: { id: number }) => {
                                                     className={`w-full justify-between bg-slate-800 hover:bg-slate-800 hover:text-slate-300 border-none text-slate-200 ${!field.value && "text-muted-foreground"}`}
                                                 >
                                                     {field.value
-                                                        ? frameworks.find((framework) => framework.value === field.value)?.label
-                                                        : "Select employee..."}
+                                                        ? employees.find((employee) => employee.id === field.value)?.name
+                                                        : "Assign to..."}
                                                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                                 </Button>
                                             </PopoverTrigger>
@@ -174,22 +157,23 @@ const CreateTask = ({ id }: { id: number }) => {
                                                     <CommandList>
                                                         <CommandEmpty>No employee found.</CommandEmpty>
                                                         <CommandGroup>
-                                                            {frameworks.map((framework) => (
+                                                            {employees.map((employee) => (
                                                                 <CommandItem
-                                                                    key={framework.value}
-                                                                    value={framework.value.toString()}
+                                                                    itemType='integer'
+                                                                    key={employee.id}
+                                                                    // value={employee.id}
                                                                     onSelect={() => {
-                                                                        form.setValue('employeeId', framework.value);
+                                                                        form.setValue('employeeId', employee.id);
                                                                     }}
                                                                     className="text-slate-300 focus:bg-slate-800 focus:text-slate-300"
                                                                 >
                                                                     <Check
                                                                         className={cn(
                                                                             "mr-2 h-4 w-4",
-                                                                            field.value === framework.value ? "opacity-100" : "opacity-0"
+                                                                            field.value === employee.id ? "opacity-100" : "opacity-0"
                                                                         )}
                                                                     />
-                                                                    {framework.label}
+                                                                    {employee.name}
                                                                 </CommandItem>
                                                             ))}
                                                         </CommandGroup>

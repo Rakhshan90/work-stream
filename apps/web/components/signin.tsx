@@ -49,12 +49,12 @@ export default function SignInCard() {
             }
             else {
                 toast({
-                    title: "You are logged in",
+                    title: "Response",
                     description: "Either you can create your project or join in existing projects",
                 })
                 setTimeout(() => {
                     setIsLoading(false)
-                    router.push("/user");
+                    router.push("/");
                 }, 2000)
             }
         } catch (error) {

@@ -1,3 +1,5 @@
+'use server';
+
 import db from '@repo/db/client';
 import { taskSchema } from '@repo/validation-schema/zod-schema';
 import { TaskStatus, TaskPriority } from '@repo/db/client';
@@ -9,7 +11,7 @@ export const createTask = async (projectId: number, employeeId: number, title: s
 ) => {
 
     const session = await getServerSession(authOptions);
-    if (!session.user || session?.user?.id) {
+    if (!session?.user || !session?.user?.id) {
         return {
             message: 'You are not authenticated, try to login again'
         }
@@ -17,6 +19,7 @@ export const createTask = async (projectId: number, employeeId: number, title: s
 
     const { success } = taskSchema.safeParse({
         projectId,
+        employeeId,
         title,
         description,
         startDate,
@@ -227,8 +230,8 @@ export const getOverDueTasks = async (projectId: number) => {
         const project = await db.project.findFirst({
             where: { id: projectId }
         });
-        
-        if(!project) {
+
+        if (!project) {
             return {
                 message: 'The project does not exist.'
             };
@@ -254,6 +257,66 @@ export const getOverDueTasks = async (projectId: number) => {
     } catch (error) {
         return {
             message: 'Failed to get tasks'
+        }
+    }
+}
+
+// get all project specific pending tasks
+export const getProjectPendingTasks = async (projectId: number) => {
+    const session = await getServerSession(authOptions);
+    if (!session?.user || !session?.user?.id) {
+        return {
+            message: 'You are not authenticated, try to login again'
+        }
+    }
+
+    try {
+        const manager = await db.user.findFirst({
+            where: {
+                id: Number(session?.user?.id)
+            }
+        });
+
+        if(manager?.role !== 'MANAGER'){
+            return {
+                message: 'You are not allowed to get all the task for this project',
+                tasks: [],
+            }
+        }
+
+        const tasks = await db.task.findMany({
+            where: {
+                projectId: projectId,
+                status: 'PENDING',
+            },
+            select: {
+                id: true,
+                title: true,
+                description: true,
+                status: true,
+                startDate: true,
+                endDate: true,
+                priority: true,
+                employee: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                    }
+                }
+            }
+        });
+
+        return {
+            message: 'All the Task have been retrieved for this project',
+            tasks: tasks || [],
+        }
+
+
+    } catch (error) {
+        return {
+            message: 'Failed to retrieve project tasks, try again',
+            tasks: [],
         }
     }
 }

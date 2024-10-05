@@ -116,3 +116,70 @@ export const getEmployees = async (filter: string) => {
         }
     }
 }
+
+
+// get project specific employees
+export const getProjectEmployees = async (projectId: number) => {
+
+    const session = await getServerSession(authOptions);
+
+    // Check if the user is authenticated
+    if (!session?.user || !session?.user.id) {
+        return {
+            message: 'You are not authenticated',
+            employees: [],
+        };
+    }
+
+    try {
+        const manager = await db.user.findFirst({
+            where: { id: Number(session?.user?.id) }
+        });
+
+        if (manager?.role !== 'MANAGER') {
+            return {
+                message: 'You are not allowed to search employees',
+                employees: [],
+            }
+        }
+
+        const project = await db.project.findFirst({
+            where: {
+                id: projectId
+            }
+        });
+
+        if(!project){
+            return {
+                message: 'Project not found',
+                employees: [],
+            }
+        }
+
+        const employees = await db.project.findFirst({
+            where: {
+                id: projectId,
+            },
+            select: {
+                employees: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                    }
+                }
+            }
+        });
+
+        return {
+            message: 'Employees within this project are fetched',
+            employees: employees?.employees || [],
+        }
+
+    } catch (error) {
+        return {
+            message: 'Failed to get employees, try again',
+            employees: [],
+        }   
+    }
+}

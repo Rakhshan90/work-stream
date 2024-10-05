@@ -23,7 +23,6 @@ const Multiselect = ({projectId}: {projectId: number}) => {
 
     useEffect(() => {
         searchEmployees();
-        console.log(employeeIds);
     }, [filter, employeeIds]);
 
     const addEmployees = async () => {

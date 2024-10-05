@@ -1,19 +1,19 @@
 import React from 'react'
 import { Card } from './ui/card'
-import { Ellipsis } from 'lucide-react'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { Button } from './ui/button'
 import TaskStatus from './task-status'
 import CreateTask from './create-task'
+import { getProjectPendingTasks } from '@/actions/taskManagement'
 
 
-const TaskList = ({id}: {id: number}) => {
+const TaskList = async ({ id }: { id: number }) => {
+
+  const getPendingTasks = async () => {
+    const res = await getProjectPendingTasks(id);
+    return res.tasks;
+  }
+
+  const pendingTasks = await getPendingTasks();
+
   return (
     <div className='flex gap-4'>
 
@@ -25,14 +25,12 @@ const TaskList = ({id}: {id: number}) => {
         <div className="flex flex-col gap-3">
           <h2 className="text-left text-slate-500 text-md font-bold">Pending Tasks</h2>
           <div className="flex flex-col gap-2">
-            <div className="w-full flex justify-between items-center bg-slate-800 p-2 rounded-xl">
-              <div className="text-left text-slate-300 text-md">Project planning</div>
-              <TaskStatus />
-            </div>
-            <div className="w-full flex justify-between items-center bg-slate-800 p-2 rounded-xl">
-              <div className="text-left text-slate-300 text-md">Meeting kickoff</div>
-              <TaskStatus />
-            </div>
+            {pendingTasks?.map((item, index) => (
+              <div key={index} className="w-full flex justify-between items-center bg-slate-800 p-2 rounded-xl">
+                <div className="text-left text-slate-300 text-md">{item?.title}</div>
+                <TaskStatus />
+              </div>
+            ))}
           </div>
         </div>
       </Card>

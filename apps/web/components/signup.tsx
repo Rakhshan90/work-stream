@@ -47,11 +47,11 @@ export default function SignupPage() {
     setIsLoading(true)
 
     try {
-      await signUp(values?.name, values?.email, values?.password, values?.role);
+      const res = await signUp(values?.name, values?.email, values?.password, values?.role);
       setIsLoading(false);
       toast({
-        title: "Account created successfully!",
-        description: "You can now log in with your new account.",
+        title: "Response",
+        description: res.message,
       })
     } catch (error) {
       toast({
