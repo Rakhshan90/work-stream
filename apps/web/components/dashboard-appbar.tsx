@@ -1,15 +1,28 @@
 'use client';
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from './ui/button'
 import { Bell } from 'lucide-react'
 import { AppbarMenu } from './appbar-menu'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { isManager } from '@/actions/userAction';
 
 const DashboardAppbar = () => {
 
     const router = useRouter();
+    const [role, setRole] = useState<boolean | {message: string} | null>(null);
+    useEffect(() => {
+        const fetchRole = async () => {
+            try {
+                const userRole = await isManager();
+                setRole(userRole); 
+            } catch (error) {
+                setRole(false);
+            }
+        };
+        fetchRole();
+    }, []);
 
   return (
     <div className='w-full px-4 py-2 bg-slate-900 border-b border-slate-600'>
@@ -18,10 +31,12 @@ const DashboardAppbar = () => {
                 <Link href={'/'} className="text-slate-400 font-bold text-xl">
                     Workstream
                 </Link>
-                <Button onClick={()=> router.push('/create-project-board')} className='bg-blue-600 text-slate-900 
-                hover:text-slate-200 hover:bg-slate-800'>
-                    Create
-                </Button>
+                {role ? (
+                    <Button onClick={()=> router.push('/create-project-board')} className='bg-blue-600 text-slate-900 
+                    hover:text-slate-200 hover:bg-slate-800'>
+                        Create
+                    </Button>
+                ): null}
             </div>
 
             <div className="flex gap-4 items-center">

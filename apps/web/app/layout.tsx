@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { NextProvider } from "./provider";
-import AppBar from "@/components/appbar";
 import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = localFont({
@@ -28,7 +27,6 @@ export default function RootLayout({
     <html lang="en">
       <NextProvider>
         <body className={`${geistSans.variable} ${geistMono.variable}`}>
-          {/* <AppBar /> */}
           {children}
           <Toaster />
         </body>

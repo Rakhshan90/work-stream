@@ -88,7 +88,7 @@ export const createTask = async (projectId: number, employeeId: number, title: s
                 endDate,
                 status,
                 priority,
-                employeeId: Number(session?.user?.id)
+                employeeId,
             }
         });
 
@@ -107,7 +107,7 @@ export const createTask = async (projectId: number, employeeId: number, title: s
 export const updateTaskStatus = async (taskId: number, status: TaskStatus) => {
 
     const session = await getServerSession(authOptions);
-    if (!session.user || session?.user?.id) {
+    if (!session.user || !session?.user?.id) {
         return {
             message: 'You are not authenticated, try to login again'
         }
@@ -159,9 +159,10 @@ export const updateTaskStatus = async (taskId: number, status: TaskStatus) => {
 
 }
 
-export const getAssignedTasks = async (projectId: number) => {
+// get all the assigned pending tasks for employee within project
+export const getAssignedPendingProjectTasks = async (projectId: number) => {
     const session = await getServerSession(authOptions);
-    if (!session?.user || session?.user?.id) {
+    if (!session?.user || !session?.user?.id) {
         return {
             message: 'You are not authenticated, try to login again'
         }
@@ -175,7 +176,8 @@ export const getAssignedTasks = async (projectId: number) => {
 
         if (employee?.role !== 'EMPLOYEE') {
             return {
-                message: 'You are not allowed to get the tasks'
+                message: 'You are not allowed to get the tasks',
+                assignedTasks: []
             }
         }
 
@@ -185,7 +187,8 @@ export const getAssignedTasks = async (projectId: number) => {
 
         if (!project) {
             return {
-                message: 'The project does not exist.'
+                message: 'The project does not exist.',
+                assignedTasks: []
             };
         }
 
@@ -193,7 +196,24 @@ export const getAssignedTasks = async (projectId: number) => {
             where: {
                 projectId,
                 employeeId: Number(session?.user?.id),
+                status: 'PENDING',
             },
+            select: {
+                id: true,
+                title: true,
+                description: true,
+                status: true,
+                startDate: true,
+                endDate: true,
+                priority: true,
+                employee: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                    }
+                }
+            }
         });
 
         return {
@@ -203,14 +223,154 @@ export const getAssignedTasks = async (projectId: number) => {
 
     } catch (error) {
         return {
-            message: 'Failed to get assigned tasks'
+            message: 'Failed to get assigned tasks',
+            assignedTasks: [],
+        }
+    }
+}
+// get all the assigned ongoing tasks for employee within project
+export const getAssignedOngoingProjectTasks = async (projectId: number) => {
+    const session = await getServerSession(authOptions);
+    if (!session?.user || !session?.user?.id) {
+        return {
+            message: 'You are not authenticated, try to login again'
+        }
+    }
+
+    try {
+
+        const employee = await db.user.findFirst({
+            where: { id: Number(session?.user?.id) },
+        });
+
+        if (employee?.role !== 'EMPLOYEE') {
+            return {
+                message: 'You are not allowed to get the tasks',
+                assignedTasks: []
+            }
+        }
+
+        const project = await db.project.findFirst({
+            where: { id: projectId }
+        });
+
+        if (!project) {
+            return {
+                message: 'The project does not exist.',
+                assignedTasks: []
+            };
+        }
+
+        const assignedTasks = await db.task.findMany({
+            where: {
+                projectId,
+                employeeId: Number(session?.user?.id),
+                status: 'ONGOING',
+            },
+            select: {
+                id: true,
+                title: true,
+                description: true,
+                status: true,
+                startDate: true,
+                endDate: true,
+                priority: true,
+                employee: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                    }
+                }
+            }
+        });
+
+        return {
+            message: 'All the project specific assigned tasks have been fetched',
+            assignedTasks: assignedTasks || [],
+        }
+
+    } catch (error) {
+        return {
+            message: 'Failed to get assigned tasks',
+            assignedTasks: [],
+        }
+    }
+}
+
+// get all the assigned completed tasks for employee within project
+export const getAssignedCompletedProjectTasks = async (projectId: number) => {
+    const session = await getServerSession(authOptions);
+    if (!session?.user || !session?.user?.id) {
+        return {
+            message: 'You are not authenticated, try to login again'
+        }
+    }
+
+    try {
+
+        const employee = await db.user.findFirst({
+            where: { id: Number(session?.user?.id) },
+        });
+
+        if (employee?.role !== 'EMPLOYEE') {
+            return {
+                message: 'You are not allowed to get the tasks',
+                assignedTasks: []
+            }
+        }
+
+        const project = await db.project.findFirst({
+            where: { id: projectId }
+        });
+
+        if (!project) {
+            return {
+                message: 'The project does not exist.',
+                assignedTasks: []
+            };
+        }
+
+        const assignedTasks = await db.task.findMany({
+            where: {
+                projectId,
+                employeeId: Number(session?.user?.id),
+                status: 'COMPLETED',
+            },
+            select: {
+                id: true,
+                title: true,
+                description: true,
+                status: true,
+                startDate: true,
+                endDate: true,
+                priority: true,
+                employee: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                    }
+                }
+            }
+        });
+
+        return {
+            message: 'All the project specific assigned tasks have been fetched',
+            assignedTasks: assignedTasks || [],
+        }
+
+    } catch (error) {
+        return {
+            message: 'Failed to get assigned tasks',
+            assignedTasks: [],
         }
     }
 }
 
 export const getOverDueTasks = async (projectId: number) => {
     const session = await getServerSession(authOptions);
-    if (!session.user || session?.user?.id) {
+    if (!session.user || !session?.user?.id) {
         return {
             message: 'You are not authenticated, try to login again'
         }
@@ -277,7 +437,7 @@ export const getProjectPendingTasks = async (projectId: number) => {
             }
         });
 
-        if(manager?.role !== 'MANAGER'){
+        if (manager?.role !== 'MANAGER') {
             return {
                 message: 'You are not allowed to get all the task for this project',
                 tasks: [],
@@ -288,6 +448,125 @@ export const getProjectPendingTasks = async (projectId: number) => {
             where: {
                 projectId: projectId,
                 status: 'PENDING',
+            },
+            select: {
+                id: true,
+                title: true,
+                description: true,
+                status: true,
+                startDate: true,
+                endDate: true,
+                priority: true,
+                employee: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                    }
+                }
+            }
+        });
+
+        return {
+            message: 'All the Task have been retrieved for this project',
+            tasks: tasks || [],
+        }
+
+
+    } catch (error) {
+        return {
+            message: 'Failed to retrieve project tasks, try again',
+            tasks: [],
+        }
+    }
+}
+
+// get all project specific ongoing tasks
+export const getProjectOngoingTasks = async (projectId: number) => {
+    const session = await getServerSession(authOptions);
+    if (!session?.user || !session?.user?.id) {
+        return {
+            message: 'You are not authenticated, try to login again'
+        }
+    }
+
+    try {
+        const manager = await db.user.findFirst({
+            where: {
+                id: Number(session?.user?.id)
+            }
+        });
+
+        if (manager?.role !== 'MANAGER') {
+            return {
+                message: 'You are not allowed to get all the task for this project',
+                tasks: [],
+            }
+        }
+
+        const tasks = await db.task.findMany({
+            where: {
+                projectId: projectId,
+                status: 'ONGOING',
+            },
+            select: {
+                id: true,
+                title: true,
+                description: true,
+                status: true,
+                startDate: true,
+                endDate: true,
+                priority: true,
+                employee: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                    }
+                }
+            }
+        });
+
+        return {
+            message: 'All the Task have been retrieved for this project',
+            tasks: tasks || [],
+        }
+
+
+    } catch (error) {
+        return {
+            message: 'Failed to retrieve project tasks, try again',
+            tasks: [],
+        }
+    }
+}
+// get all project specific completed tasks
+export const getProjectCompletedTasks = async (projectId: number) => {
+    const session = await getServerSession(authOptions);
+    if (!session?.user || !session?.user?.id) {
+        return {
+            message: 'You are not authenticated, try to login again'
+        }
+    }
+
+    try {
+        const manager = await db.user.findFirst({
+            where: {
+                id: Number(session?.user?.id)
+            }
+        });
+
+        if (manager?.role !== 'MANAGER') {
+            return {
+                message: 'You are not allowed to get all the task for this project',
+                tasks: [],
+            }
+        }
+
+        const tasks = await db.task.findMany({
+            where: {
+                projectId: projectId,
+                status: 'COMPLETED',
             },
             select: {
                 id: true,

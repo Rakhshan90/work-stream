@@ -9,7 +9,7 @@ import Link from 'next/link';
 import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
 
-const ProjectCard = ({ projects, message }: { projects: { name: string, description: string, startDate: Date, endDate: Date, status: ProjectStatus, id: number }[], message: string }) => {
+const ProjectCard = ({ projects }: { projects: { name: string, description: string, startDate: Date, endDate: Date, status: ProjectStatus, id: number }[] }) => {
 
     const router = useRouter();
 
@@ -22,7 +22,7 @@ const ProjectCard = ({ projects, message }: { projects: { name: string, descript
                             <div className="flex flex-col gap-4 lg:flex-row">
                                 <h2 className="text-left text-xl text-blue-600">{project?.name}</h2>
                                 <Button 
-                                onClick={() => router.push(`/add/${project?.id}`)}
+                                onClick={() => router.push(`/board/${project?.id}/add`)}
                                 className='bg-blue-600 text-slate-900 hover:bg-slate-800 hover:text-slate-300'>
                                     Add employees
                                 </Button>

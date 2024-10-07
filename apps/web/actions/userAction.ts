@@ -2,7 +2,7 @@
 
 import { authOptions } from '@/app/config/authOptions';
 import db from '@repo/db/client';
-import { Role } from '@repo/db/client';
+import { Role } from '@repo/db/client'; 
 import { signUpSchema } from '@repo/validation-schema/zod-schema';
 import bcrypt from 'bcrypt';
 import { getServerSession } from 'next-auth';
@@ -132,17 +132,7 @@ export const getProjectEmployees = async (projectId: number) => {
     }
 
     try {
-        const manager = await db.user.findFirst({
-            where: { id: Number(session?.user?.id) }
-        });
-
-        if (manager?.role !== 'MANAGER') {
-            return {
-                message: 'You are not allowed to search employees',
-                employees: [],
-            }
-        }
-
+        
         const project = await db.project.findFirst({
             where: {
                 id: projectId
@@ -181,5 +171,36 @@ export const getProjectEmployees = async (projectId: number) => {
             message: 'Failed to get employees, try again',
             employees: [],
         }   
+    }
+}
+
+
+// Tells about the role of user
+export const isManager = async () =>{
+    const session = await getServerSession(authOptions);
+    if (!session?.user || !session?.user?.id) {
+        return {
+            message: 'You are not authenticated, try to login again'
+        }
+    }
+
+    try {
+        const manager = await db.user.findFirst({
+            where: {
+                id: Number(session?.user?.id),
+            }
+        });
+
+        if(manager && manager?.role === 'MANAGER'){
+            return true;
+        }
+        else {
+            return false;
+        }
+
+    } catch (error) {
+        return {
+            message: 'Failed to get role of the user'
+        }
     }
 }

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { ChevronLeft, ChevronRight, LayoutDashboard, Users, UserRoundPlus } from "lucide-react"
 
-export default function Sidebar() {
+export default function Sidebar({ params }: { params: { slug: string } }) {
     const [isOpen, setIsOpen] = useState(true)
 
     const toggleSidebar = () => setIsOpen(!isOpen)
@@ -31,8 +31,11 @@ export default function Sidebar() {
                         <NavItem href="/board-list" icon={<LayoutDashboard />}>
                             boards
                         </NavItem>
-                        <NavItem href="/board-list" icon={<Users />}>
+                        <NavItem href={`/board/${Number(params.slug)}/members`} icon={<Users />}>
                             Members
+                        </NavItem>
+                        <NavItem href={`/board/${Number(params.slug)}/add`} icon={<Users />}>
+                            Add member
                         </NavItem>
                     </div>
 
