@@ -128,22 +128,24 @@ const TaskList = async ({ id }: { id: number }) => {
       </Card>
 
       {/* Overdue tasks */}
-      <Card className='bg-slate-900 border-none px-2 py-4 w-64'>
-        <div className="flex flex-col gap-3">
-          <h2 className="text-left text-slate-500 text-md font-bold">Overdue Tasks</h2>
-          <div className="flex flex-col gap-2">
-            {incompletedTasks?.map((item, index) => (
-              <div key={index} className="w-full flex justify-between items-center bg-red-800 p-2 rounded-xl">
-                <div className="text-left text-slate-300 text-md">{item?.title}</div>
-                <TaskDetail taskId={item?.id} role={role} title={item?.title} description={item?.description}
-                  status={item?.status} startDate={item?.startDate.toDateString()}
-                  endDate={item?.endDate.toDateString()} priority={item?.priority}
-                  employee={item?.employee} />
-              </div>
-            ))}
+      {role ? (
+        <Card className='bg-slate-900 border-none px-2 py-4 w-64'>
+          <div className="flex flex-col gap-3">
+            <h2 className="text-left text-slate-500 text-md font-bold">Overdue Tasks</h2>
+            <div className="flex flex-col gap-2">
+              {incompletedTasks?.map((item, index) => (
+                <div key={index} className="w-full flex justify-between items-center bg-red-800 p-2 rounded-xl">
+                  <div className="text-left text-slate-300 text-md">{item?.title}</div>
+                  <TaskDetail taskId={item?.id} role={role} title={item?.title} description={item?.description}
+                    status={item?.status} startDate={item?.startDate.toDateString()}
+                    endDate={item?.endDate.toDateString()} priority={item?.priority}
+                    employee={item?.employee} />
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      </Card>
+        </Card>
+      ) : null}
     </div>
   )
 }

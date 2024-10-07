@@ -15,19 +15,7 @@ export default function AppBar() {
   const router = useRouter();
   const session = useSession();
   const authenticated = session.status === 'authenticated';
-  const [role, setRole] = React.useState<boolean | { message: string } | null>(null);
-  React.useEffect(() => {
-    const fetchRole = async () => {
-      try {
-        const userRole = await isManager();
-        setRole(userRole);
-      } catch (error) {
-        setRole(false);
-      }
-    };
-    fetchRole();
-  }, []);
-
+  
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-600 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4">
       <div className="container flex h-14 items-center">
@@ -41,12 +29,10 @@ export default function AppBar() {
           <nav className="flex items-center space-x-6 text-sm font-medium text-white">
             <Link href="/features">Features</Link>
             <Link href="/board-list">boards</Link>
-            {role ? (
-              <Button onClick={() => router.push('/create-project-board')} className='bg-blue-600 text-slate-900 
+            <Button onClick={() => router.push('/create-project-board')} className='bg-blue-600 text-slate-900 
                     hover:text-slate-200 hover:bg-slate-800'>
-                Create
-              </Button>
-            ) : null}
+              Create
+            </Button>
           </nav>
         </div>
         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
