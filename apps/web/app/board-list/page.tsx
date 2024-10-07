@@ -3,36 +3,8 @@ import React from 'react'
 import { viewEmployeeProjects, viewManagerProjects } from '@/actions/projectManagement';
 import { isManager } from '@/actions/userAction';
 import AppBar from '@/components/appbar';
-
-
-const getProjects = async () => {
-  try {
-    const res = await viewManagerProjects();
-    return res;
-  } catch (error) {
-    return { projects: [], message: 'Failed to get projects' };
-  }
-}
-
-const getEmployeeProjects = async () => {
-  try {
-    const res = await viewEmployeeProjects();
-    return res;
-  } catch (error) {
-    return { projects: [], message: 'Failed to get employee projects' };
-  }
-}
-
-const getRole = async () => {
-  try {
-    const res = await isManager();
-    return res;
-  } catch (error) {
-    return {
-      message: 'Something went wrong while getting role of the user',
-    }
-  }
-}
+import { getEmployeeProjects, getManagerProjects } from '@/lib/project/project';
+import { getRole } from '@/lib/user/userRole';
 
 
 const page = async () => {
@@ -40,7 +12,7 @@ const page = async () => {
   const role = await getRole();
   let projects;
   if(role){
-    projects = await getProjects();
+    projects = await getManagerProjects();
   }
   else {
     projects = await getEmployeeProjects();

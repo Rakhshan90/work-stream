@@ -1,17 +1,11 @@
 import React from 'react'
 import { Card } from './ui/card'
 import TaskDetail from './task-detail'
-import CreateTask from './create-task'
-import { getAssignedCompletedProjectTasks, getAssignedOngoingProjectTasks, getAssignedPendingProjectTasks, getProjectCompletedTasks, getProjectPendingTasks } from '@/actions/taskManagement'
-import { isManager } from '@/actions/userAction'
+import { getAssignedCompletedProjectTasks, getAssignedOngoingProjectTasks, getAssignedPendingProjectTasks, getOverDueTasks, getProjectCompletedTasks, getProjectPendingTasks } from '@/actions/taskManagement'
+import { getRole } from '@/lib/user/userRole'
 
 
 const TaskList = async ({ id }: { id: number }) => {
-
-  const getRole = async () => {
-    const res = await isManager();
-    return res;
-  }
 
   const getPendingTasks = async () => {
     const res = await getProjectPendingTasks(id);
@@ -37,6 +31,10 @@ const TaskList = async ({ id }: { id: number }) => {
     const res = await getAssignedCompletedProjectTasks(id);
     return res.assignedTasks;
   }
+  const overdueTasks = async () => {
+    const res = await getOverDueTasks(id);
+    return res.overdueTasks;
+  }
 
   const role = await getRole();
   let pendingTasks;
@@ -60,21 +58,20 @@ const TaskList = async ({ id }: { id: number }) => {
   }
 
   let completedTasks;
-  if(role){
+  if (role) {
     completedTasks = await getCompletedTasks();
   }
-  else{
+  else {
     completedTasks = await getAssignedCompletedTasks();
+  }
+
+  let incompletedTasks;
+  if (role) {
+    incompletedTasks = await overdueTasks();
   }
 
   return (
     <div className='flex-1 flex flex-col gap-4 lg:flex-row lg:flex-auto'>
-
-      {/* Add task */}
-      {role ? (
-        <CreateTask id={id} />
-      ) : null}
-
       {/* Pending tasks */}
       <Card className='bg-slate-900 border-none px-2 py-4 w-64'>
         <div className="flex flex-col gap-3">
@@ -119,6 +116,24 @@ const TaskList = async ({ id }: { id: number }) => {
           <div className="flex flex-col gap-2">
             {completedTasks?.map((item, index) => (
               <div key={index} className="w-full flex justify-between items-center bg-slate-800 p-2 rounded-xl">
+                <div className="text-left text-slate-300 text-md">{item?.title}</div>
+                <TaskDetail taskId={item?.id} role={role} title={item?.title} description={item?.description}
+                  status={item?.status} startDate={item?.startDate.toDateString()}
+                  endDate={item?.endDate.toDateString()} priority={item?.priority}
+                  employee={item?.employee} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </Card>
+
+      {/* Overdue tasks */}
+      <Card className='bg-slate-900 border-none px-2 py-4 w-64'>
+        <div className="flex flex-col gap-3">
+          <h2 className="text-left text-slate-500 text-md font-bold">Overdue Tasks</h2>
+          <div className="flex flex-col gap-2">
+            {incompletedTasks?.map((item, index) => (
+              <div key={index} className="w-full flex justify-between items-center bg-red-800 p-2 rounded-xl">
                 <div className="text-left text-slate-300 text-md">{item?.title}</div>
                 <TaskDetail taskId={item?.id} role={role} title={item?.title} description={item?.description}
                   status={item?.status} startDate={item?.startDate.toDateString()}

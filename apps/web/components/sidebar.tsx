@@ -3,12 +3,18 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { ChevronLeft, ChevronRight, LayoutDashboard, Users, UserRoundPlus } from "lucide-react"
+import { ChevronLeft, ChevronRight, LayoutDashboard, Users, UserRoundPlus, CalendarCheck } from "lucide-react"
+import { ProjectStatus } from '@repo/db/client';
 
-export default function Sidebar({ params }: { params: { slug: string } }) {
+export default function Sidebar({ params, projects }: {
+    params: { slug: string },
+    projects: { name: string, description: string, startDate: Date, endDate: Date, status: ProjectStatus, id: number }[]
+}) {
     const [isOpen, setIsOpen] = useState(true)
 
     const toggleSidebar = () => setIsOpen(!isOpen)
+
+    const projectName = projects.find((i)=> i.id === Number(params.slug))
 
     return (
         <div className={`min-h-screen bg-slate-900 px-3 py-2 border-r border-slate-600 ${isOpen ? 'w-64' : 'w-0'} transition duration-600`}>
@@ -21,7 +27,7 @@ export default function Sidebar({ params }: { params: { slug: string } }) {
                 <div className="w-full flex flex-col gap-6">
                     {/* item 1 */}
                     <div className="w-full flex justify-between items-center border-b border-slate-600 py-2">
-                        <div className="text-slate-200 font-semibold">Workspace</div>
+                        <div className="text-slate-200 font-semibold">{projectName?.name}</div>
                         <Button onClick={toggleSidebar} className="bg-slate-800 h-6 w-6 px-1 rounded-full">
                             <ChevronLeft className="font-bold" />
                         </Button>
@@ -34,8 +40,11 @@ export default function Sidebar({ params }: { params: { slug: string } }) {
                         <NavItem href={`/board/${Number(params.slug)}/members`} icon={<Users />}>
                             Members
                         </NavItem>
-                        <NavItem href={`/board/${Number(params.slug)}/add`} icon={<Users />}>
+                        <NavItem href={`/board/${Number(params.slug)}/add`} icon={<UserRoundPlus />}>
                             Add member
+                        </NavItem>
+                        <NavItem href={`/board/${Number(params.slug)}/create-task`} icon={<CalendarCheck />}>
+                            Create task
                         </NavItem>
                     </div>
 
@@ -44,9 +53,11 @@ export default function Sidebar({ params }: { params: { slug: string } }) {
                         <h3 className="text-slate-300 text-left">
                             Your boards
                         </h3>
-                        <NavItem href="/board/:1" icon={<LayoutDashboard />}>
-                            my board
-                        </NavItem>
+                        {projects?.map((item, index) => (
+                            <NavItem key={index} href={`/board/${item?.id}`} icon={<LayoutDashboard />}>
+                                {item?.name}
+                            </NavItem>
+                        ))}
                     </div>
                 </div>
             )}

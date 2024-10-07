@@ -184,35 +184,35 @@ export const viewManagerProjects = async () => {
 
 export const viewEmployeeProjects = async () => {
     const session = await getServerSession(authOptions);
-  
+
     // Check if the user is authenticated
     if (!session?.user || !session?.user.id) {
-      return {
-        message: 'You are not authenticated',
-        projects: [],
-      };
+        return {
+            message: 'You are not authenticated',
+            projects: [],
+        };
     }
-  
+
     try {
-      // Fetch projects where the employee is part of the project (in the employees array)
-      const projects = await db.project.findMany({
-        where: {
-          employees: {
-            some: {
-              id: Number(session.user.id),
+        // Fetch projects where the employee is part of the project (in the employees array)
+        const projects = await db.project.findMany({
+            where: {
+                employees: {
+                    some: {
+                        id: Number(session.user.id),
+                    },
+                },
             },
-          },
-        },
-      });
-  
-      return {
-        message: 'Projects fetched successfully',
-        projects: projects || [],
-      };
+        });
+
+        return {
+            message: 'Projects fetched successfully',
+            projects: projects || [],
+        };
     } catch (error) {
-      return {
-        message: 'Failed to fetch projects',
-        projects: [],
-      };
+        return {
+            message: 'Failed to fetch projects',
+            projects: [],
+        };
     }
-  };
+};

@@ -406,6 +406,22 @@ export const getOverDueTasks = async (projectId: number) => {
                 status: {
                     in: ['ONGOING', 'PENDING'],
                 }
+            },
+            select: {
+                id: true,
+                title: true,
+                description: true,
+                status: true,
+                startDate: true,
+                endDate: true,
+                priority: true,
+                employee: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                    }
+                }
             }
         });
 
@@ -416,7 +432,8 @@ export const getOverDueTasks = async (projectId: number) => {
 
     } catch (error) {
         return {
-            message: 'Failed to get tasks'
+            message: 'Failed to get tasks',
+            getOverDueTasks: []
         }
     }
 }

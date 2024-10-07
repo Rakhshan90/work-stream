@@ -58,7 +58,7 @@ const CreateProject = () => {
             const res = await createProject(values?.name, values?.description, values?.startDate, values?.endDate, values?.status);
             setIsLoading(false);
             toast({
-                title: "Response message",
+                title: "Response",
                 description: res.message,
             })
         } catch (error) {
@@ -70,12 +70,12 @@ const CreateProject = () => {
 
         setTimeout(() => {
             setIsLoading(false)
-            router.push("/add")
+            router.push("/board-list")
         }, 2000)
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-center px-4 sm:px-6 lg:px-8">
             <Card className="w-full max-w-md bg-slate-900 border-none text-white">
                 <CardHeader>
                     <CardTitle className="text-3xl font-bold text-center text-blue-600">Create board</CardTitle>
