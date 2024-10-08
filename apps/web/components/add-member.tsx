@@ -8,13 +8,20 @@ import { Button } from './ui/button'
 import { getEmployees } from '@/actions/userAction';
 import { addEmployeesToProject } from '@/actions/projectManagement';
 import { useToast } from '@/hooks/use-toast';
+import { Role } from '@repo/db/client';
+import { useRouter } from 'next/navigation';
 
-const Multiselect = ({projectId}: {projectId: number}) => {
+const Multiselect = ({ projectId, role }: { projectId: number, role:  Role | null}) => {
+
+    const router = useRouter();
+    if(role !== 'MANAGER'){
+        router.push(`/board/${projectId}`);
+    }
 
     const [filter, setFilter] = useState('');
     const [users, setUsers] = useState<{ name: string, email: string, id: number }[]>([]);
-    const [employeeIds, setEmployeeIds] = useState<{id: number, name: string}[]>([]);
-    const {toast} = useToast();
+    const [employeeIds, setEmployeeIds] = useState<{ id: number, name: string }[]>([]);
+    const { toast } = useToast();
 
     const searchEmployees = async () => {
         const res = await getEmployees(filter);
@@ -62,7 +69,7 @@ const Multiselect = ({projectId}: {projectId: number}) => {
                         <div key={index} className="flex gap-4 bg-slate-900 text-slate-300 px-2 py-1 5 rounded-lg">
                             <div className="text-slate-300 text-md">{item?.name}</div>
                             <Button className='hover:bg-red-600 h-6 w-6 px-1 rounded-lg'>
-                                <X onClick={()=> {
+                                <X onClick={() => {
                                     setEmployeeIds(employeeIds.filter((_, i) => i !== index))
                                 }} className='text-slate-300 w-8 h-8' />
                             </Button>
@@ -77,12 +84,12 @@ const Multiselect = ({projectId}: {projectId: number}) => {
 
             {users?.map((user, index) => (
                 <div key={index} className="flex flex-col gap-2">
-                    <div className="w-full flex justify-between items-center bg-slate-800 rounded-xl p-2">
+                    <div className="w-full flex justify-between items-center bg-slate-800 rounded-lg p-2">
                         <div className="flex flex-col">
                             <div className="text-md text-slate-300">{user?.name}</div>
                             <div className="text-md text-slate-300">{user?.email}</div>
                         </div>
-                        <Button onClick={() => setEmployeeIds([...employeeIds, {id: user?.id, name: user?.name}])} className='bg-blue-600 text-slate-950 hover:bg-slate-700 hover:text-white'>Add</Button>
+                        <Button onClick={() => setEmployeeIds([...employeeIds, { id: user?.id, name: user?.name }])} className='bg-blue-600 text-slate-950 hover:bg-slate-700 hover:text-white'>Add</Button>
                     </div>
                 </div>
             ))}

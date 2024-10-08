@@ -27,16 +27,20 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { projectSchema, ProjectSchemaType } from "@repo/validation-schema/zod-schema"
-import { ProjectStatus } from '@repo/db/client';
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { CalendarIcon } from "lucide-react"
 import { format } from "date-fns"
 import { createProject } from "@/actions/projectManagement"
+import {Role} from '@repo/db/client'
 
-const CreateProject = () => {
+const CreateProject = ({role}: {role: Role | null}) => {
 
     const router = useRouter()
+    if(role !== 'MANAGER'){
+        router.push('/');
+    }
+
     const { toast } = useToast();
     const [isLoading, setIsLoading] = useState(false)
 
@@ -91,7 +95,6 @@ const CreateProject = () => {
                                 name="name"
                                 render={({ field }) => (
                                     <FormItem >
-                                        <FormLabel>Name</FormLabel>
                                         <FormControl>
                                             <Input className="bg-slate-800 border-none placeholder:text-slate-200" placeholder="Project name" {...field} />
                                         </FormControl>
@@ -104,7 +107,6 @@ const CreateProject = () => {
                                 name="description"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Description</FormLabel>
                                         <FormControl>
                                             <Input className="bg-slate-800 border-none placeholder:text-slate-200"
                                                 placeholder="Description of the project" {...field} />
@@ -118,7 +120,6 @@ const CreateProject = () => {
                                 name="status"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Status</FormLabel>
                                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                                             <FormControl className="bg-slate-800 border-none placeholder:text-slate-200">
                                                 <SelectTrigger className="bg-slate-800 border-none text-slate-200 placeholder:text-slate-200">
@@ -152,7 +153,6 @@ const CreateProject = () => {
                                 name="startDate"
                                 render={({ field }) => (
                                     <FormItem className="flex flex-col">
-                                        <FormLabel>Start Date</FormLabel>
                                         <Popover>
                                             <PopoverTrigger asChild>
                                                 <FormControl>
@@ -163,7 +163,7 @@ const CreateProject = () => {
                                                         {field.value ? (
                                                             format(field.value, "PPP")
                                                         ) : (
-                                                            <span>Pick a date</span>
+                                                            <span>Start date</span>
                                                         )}
                                                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                                     </Button>
@@ -190,7 +190,6 @@ const CreateProject = () => {
                                 name="endDate"
                                 render={({ field }) => (
                                     <FormItem className="flex flex-col">
-                                        <FormLabel>End Date</FormLabel>
                                         <Popover>
                                             <PopoverTrigger asChild>
                                                 <FormControl>
@@ -201,7 +200,7 @@ const CreateProject = () => {
                                                         {field.value ? (
                                                             format(field.value, "PPP")
                                                         ) : (
-                                                            <span>Pick a date</span>
+                                                            <span>End date</span>
                                                         )}
                                                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                                     </Button>

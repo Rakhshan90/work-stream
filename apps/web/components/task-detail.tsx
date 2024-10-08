@@ -24,10 +24,11 @@ import { Ellipsis } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast';
 import { updateTaskStatus } from '@/actions/taskManagement';
 import { TaskStatus } from '@repo/db/client';
+import { Role } from '@repo/db/client';
 
 const TaskDetail = ({ title, description, status, startDate, endDate, priority, employee, role, taskId }: {
     title: string, description: string, status: string, startDate: string, endDate: string,
-    priority: string, employee: { id: number, name: string, email: string }, role: Boolean | { message: string }, taskId: number
+    priority: string, employee: { id: number, name: string, email: string }, role: Role | null, taskId: number
 }) => {
     
     const [statusVal, setStatusVal] = useState('');
@@ -76,7 +77,7 @@ const TaskDetail = ({ title, description, status, startDate, endDate, priority, 
                         Assigned to: {employee?.name} - {employee?.email}
                     </DialogDescription>
                 </DialogHeader>
-                {!role ? (
+                {role !== 'MANAGER' ? (
                     <div className="grid gap-4 py-4">
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="name" className="text-right">
@@ -95,7 +96,7 @@ const TaskDetail = ({ title, description, status, startDate, endDate, priority, 
                         </div>
                     </div>
                 ) : null}
-                {!role ? (
+                {role !== 'MANAGER' ? (
                     <DialogFooter>
                         <Button onClick={clickHandler} type="submit" disabled={isLoading}
                         className='bg-blue-600 hover:bg-slate-800'>

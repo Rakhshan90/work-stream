@@ -1,18 +1,19 @@
+import { authOptions } from '@/app/config/authOptions';
 import CreateTask from '@/components/create-task';
+import { getUserRole } from '@/lib/user/getUserRole';
 import { getRole } from '@/lib/user/userRole'
+import { getServerSession } from 'next-auth';
 import React from 'react'
 
 
 export default async function Page({ params }: { params: { slug: string } }) {
 
-
-    const role = await getRole();
+    const session = await getServerSession(authOptions);
+    const role = await getUserRole(Number(session?.user?.id));
 
     return (
         <div className='m-4 flex-1'>
-            {role ? (
-                <CreateTask id={Number(params.slug)} />
-            ) : null}
+            <CreateTask role={role} id={Number(params.slug)} />
         </div>
     )
 }

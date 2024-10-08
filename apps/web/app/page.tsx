@@ -1,13 +1,18 @@
 import AppBar from "@/components/appbar";
+import { authOptions } from "./config/authOptions";
+import { getServerSession } from "next-auth";
+import { getUserRole } from "@/lib/user/getUserRole";
+import LandingPage from "@/components/landing-page";
 
 export default async function Home() {
 
+  const session = await getServerSession(authOptions);
+  const role = await getUserRole(Number(session?.user?.id));
+
   return (
-    <div>
-      <AppBar />
-      <div className="text-blue-600 font-bold text-4xl ml-12">
-        Home Page
-      </div>
+    <div className="bg-black">
+      <AppBar role={role} />
+      <LandingPage />
     </div>
   );
 }

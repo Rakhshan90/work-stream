@@ -3,9 +3,9 @@ import { Card } from './ui/card'
 import TaskDetail from './task-detail'
 import { getAssignedCompletedProjectTasks, getAssignedOngoingProjectTasks, getAssignedPendingProjectTasks, getOverDueTasks, getProjectCompletedTasks, getProjectPendingTasks } from '@/actions/taskManagement'
 import { getRole } from '@/lib/user/userRole'
+import {Role} from '@repo/db/client'
 
-
-const TaskList = async ({ id }: { id: number }) => {
+const TaskList = async ({ id, role }: { id: number, role: Role | null }) => {
 
   const getPendingTasks = async () => {
     const res = await getProjectPendingTasks(id);
@@ -36,9 +36,8 @@ const TaskList = async ({ id }: { id: number }) => {
     return res.overdueTasks;
   }
 
-  const role = await getRole();
   let pendingTasks;
-  if (role) {
+  if (role === 'MANAGER') {
     // only manager can retrieve pending tasks within project
     pendingTasks = await getPendingTasks();
   }
@@ -48,7 +47,7 @@ const TaskList = async ({ id }: { id: number }) => {
   }
 
   let ongoingTasks;
-  if (role) {
+  if (role === 'MANAGER') {
     // only manager can retrieve pending tasks within project
     ongoingTasks = await getOngoingTasks();
   }
@@ -58,7 +57,7 @@ const TaskList = async ({ id }: { id: number }) => {
   }
 
   let completedTasks;
-  if (role) {
+  if (role === 'MANAGER') {
     completedTasks = await getCompletedTasks();
   }
   else {
@@ -66,7 +65,7 @@ const TaskList = async ({ id }: { id: number }) => {
   }
 
   let incompletedTasks;
-  if (role) {
+  if (role === 'MANAGER') {
     incompletedTasks = await overdueTasks();
   }
 
@@ -128,7 +127,7 @@ const TaskList = async ({ id }: { id: number }) => {
       </Card>
 
       {/* Overdue tasks */}
-      {role ? (
+      {role === 'MANAGER' ? (
         <Card className='bg-slate-900 border-none px-2 py-4 w-64'>
           <div className="flex flex-col gap-3">
             <h2 className="text-left text-slate-500 text-md font-bold">Overdue Tasks</h2>

@@ -1,28 +1,29 @@
 import ProjectCard from '@/components/project-card'
 import React from 'react'
-import { viewEmployeeProjects, viewManagerProjects } from '@/actions/projectManagement';
-import { isManager } from '@/actions/userAction';
 import AppBar from '@/components/appbar';
 import { getEmployeeProjects, getManagerProjects } from '@/lib/project/project';
-import { getRole } from '@/lib/user/userRole';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../config/authOptions';
+import { getUserRole } from '@/lib/user/getUserRole';
 
 
 const page = async () => {
 
-  const role = await getRole();
+  const session = await getServerSession(authOptions);
+  const role = await getUserRole(Number(session?.user?.id));
   let projects;
-  if(role){
+  if (role === 'MANAGER') {
     projects = await getManagerProjects();
   }
   else {
     projects = await getEmployeeProjects();
   }
-  
+
   return (
     <div>
-      <AppBar />
+      <AppBar role={role} />
       <div className='m-4 flex flex-col gap-4 flex-1'>
-        <ProjectCard projects={projects.projects} />
+        <ProjectCard role={role} projects={projects.projects} />
       </div>
     </div>
   )

@@ -7,8 +7,9 @@ import {
 import { ProjectStatus } from '@repo/db/client';
 import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
+import { Role } from '@repo/db/client';
 
-const ProjectCard = ({ projects }: { projects: { name: string, description: string, startDate: Date, endDate: Date, status: ProjectStatus, id: number }[] }) => {
+const ProjectCard = ({ projects, role }: { projects: { name: string, description: string, startDate: Date, endDate: Date, status: ProjectStatus, id: number }[], role: Role | null }) => {
 
     const router = useRouter();
 
@@ -20,14 +21,16 @@ const ProjectCard = ({ projects }: { projects: { name: string, description: stri
                         <div className="w-1/2 flex flex-col gap-4">
                             <div className="flex flex-col gap-4 lg:flex-row">
                                 <h2 className="text-left text-xl text-blue-600">{project?.name}</h2>
-                                <Button 
-                                onClick={() => router.push(`/board/${project?.id}/add`)}
-                                className='bg-blue-600 text-slate-900 hover:bg-slate-800 hover:text-slate-300'>
-                                    Add employees
-                                </Button>
+                                {role === 'MANAGER' ? (
+                                    <Button
+                                        onClick={() => router.push(`/board/${project?.id}/add`)}
+                                        className='bg-blue-600 text-slate-900 hover:bg-slate-800 hover:text-slate-300'>
+                                        Add employees
+                                    </Button>
+                                ) : null}
                                 <Button variant='outline'
-                                onClick={() => router.push(`/board/${project?.id}`)}
-                                className='bg-slate-900 border-blue-600 text-blue-600'>
+                                    onClick={() => router.push(`/board/${project?.id}`)}
+                                    className='bg-slate-900 border-blue-600 text-blue-600'>
                                     View board
                                 </Button>
                             </div>

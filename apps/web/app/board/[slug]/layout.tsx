@@ -1,14 +1,18 @@
+import { authOptions } from '@/app/config/authOptions';
 import DashboardAppbar from '@/components/dashboard-appbar'
 import Sidebar from '@/components/sidebar'
 import { getEmployeeProjects, getManagerProjects } from '@/lib/project/project';
+import { getUserRole } from '@/lib/user/getUserRole';
 import { getRole } from '@/lib/user/userRole';
+import { getServerSession } from 'next-auth';
 import React from 'react'
 
 export default async function Layout({ children, params }: { children: React.ReactNode, params: { slug: string } }) {
 
-    const role = await getRole();
+    const session = await getServerSession(authOptions);
+    const role = await getUserRole(Number(session?.user?.id));
     let projects;
-    if (role) {
+    if (role === 'MANAGER') {
         projects = await getManagerProjects();
     }
     else {
@@ -17,9 +21,9 @@ export default async function Layout({ children, params }: { children: React.Rea
 
     return (
         <div className="flex flex-col">
-            <DashboardAppbar />
+            <DashboardAppbar role={role} />
             <div className='flex'>
-                <Sidebar params={params} projects={projects.projects} />
+                <Sidebar role={role} params={params} projects={projects.projects} />
                 {children}
             </div>
         </div>

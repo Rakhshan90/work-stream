@@ -40,8 +40,16 @@ import {
 } from "@/components/ui/command"
 import { getProjectEmployees } from "@/actions/userAction"
 import { createTask } from "@/actions/taskManagement"
+import {Role} from '@repo/db/client'
+import { useRouter } from "next/navigation"
 
-const CreateTask = ({ id }: { id: number }) => {
+const CreateTask = ({ id, role }: { id: number, role: Role | null }) => {
+
+
+    const router = useRouter();
+    if(role !== 'MANAGER'){
+        router.push(`/board/${id}`)
+    }
 
     const { toast } = useToast();
     const [isLoading, setIsLoading] = useState(false)

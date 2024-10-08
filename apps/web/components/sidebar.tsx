@@ -5,16 +5,17 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { ChevronLeft, ChevronRight, LayoutDashboard, Users, UserRoundPlus, CalendarCheck } from "lucide-react"
 import { ProjectStatus } from '@repo/db/client';
+import { Role } from "@repo/db/client"
 
-export default function Sidebar({ params, projects }: {
+export default function Sidebar({ params, projects, role }: {
     params: { slug: string },
-    projects: { name: string, description: string, startDate: Date, endDate: Date, status: ProjectStatus, id: number }[]
+    projects: { name: string, description: string, startDate: Date, endDate: Date, status: ProjectStatus, id: number }[], role: Role | null
 }) {
     const [isOpen, setIsOpen] = useState(true)
 
     const toggleSidebar = () => setIsOpen(!isOpen)
 
-    const projectName = projects.find((i)=> i.id === Number(params.slug))
+    const projectName = projects.find((i) => i.id === Number(params.slug))
 
     return (
         <div className={`min-h-screen bg-slate-900 px-3 py-2 border-r border-slate-600 ${isOpen ? 'w-64' : 'w-0'} transition duration-600`}>
@@ -40,12 +41,16 @@ export default function Sidebar({ params, projects }: {
                         <NavItem href={`/board/${Number(params.slug)}/members`} icon={<Users />}>
                             Members
                         </NavItem>
-                        <NavItem href={`/board/${Number(params.slug)}/add`} icon={<UserRoundPlus />}>
-                            Add member
-                        </NavItem>
-                        <NavItem href={`/board/${Number(params.slug)}/create-task`} icon={<CalendarCheck />}>
-                            Create task
-                        </NavItem>
+                        {role === 'MANAGER' ? (
+                            <NavItem href={`/board/${Number(params.slug)}/add`} icon={<UserRoundPlus />}>
+                                Add member
+                            </NavItem>
+                        ) : null}
+                        {role === 'MANAGER' ? (
+                            <NavItem href={`/board/${Number(params.slug)}/create-task`} icon={<CalendarCheck />}>
+                                Create task
+                            </NavItem>
+                        ) : null}
                     </div>
 
                     {/* item 3 */}
