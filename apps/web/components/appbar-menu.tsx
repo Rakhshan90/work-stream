@@ -1,3 +1,5 @@
+'use client';
+
 import {
     CircleUserRound,
     Cloud,
@@ -109,8 +111,8 @@ import { signOut } from "next-auth/react"
             <span>Support</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator className="bg-slate-600" />
-          <DropdownMenuItem className="cursor-pointer focus:bg-red-600 focus:text-slate-200">
-            <LogOut className="mr-2 h-4 w-4" onClick={()=> signOut()} />
+          <DropdownMenuItem onClick={()=> signOut()} className="cursor-pointer focus:bg-red-600 focus:text-slate-200">
+            <LogOut className="mr-2 h-4 w-4"/>
             <span>Log out</span>
             <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
           </DropdownMenuItem>

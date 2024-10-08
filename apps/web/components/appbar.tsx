@@ -28,7 +28,6 @@ export default function AppBar({ role }: { role: Role | null }) {
             </span>
           </Link>
           <nav className="flex items-center space-x-6 text-sm font-medium text-white">
-            <Link href="/features">Features</Link>
             <Link href="/board-list">boards</Link>
             {role === 'MANAGER' ? (
               <Button onClick={() => router.push('/create-project-board')} className='bg-blue-600 text-slate-900 
@@ -59,12 +58,6 @@ export default function AppBar({ role }: { role: Role | null }) {
             <div className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
               <div className="flex flex-col space-y-3">
                 <MobileLink
-                  href="/features"
-                  onOpenChange={setIsMobileMenuOpen}
-                >
-                  Features
-                </MobileLink>
-                <MobileLink
                   href="/board-list"
                   onOpenChange={setIsMobileMenuOpen}
                 >
@@ -86,15 +79,18 @@ export default function AppBar({ role }: { role: Role | null }) {
           </div>
           <nav className="flex items-center">
             {authenticated ? (
-              <Button onClick={() => signOut()} variant="ghost" className="mr-2 bg-red-600 text-white">
+              <Button onClick={() => signOut()} variant="ghost" className="mr-2 bg-red-600 text-slate-300 hover:text-slate-200 hover:bg-slate-800">
                 Sign Out
               </Button>
             ) : (
               <>
-                <Button onClick={() => signIn()} variant="ghost" className="mr-2 bg-blue-600 text-white">
+                <Button onClick={() => signIn()} variant="ghost" className="mr-2 bg-blue-600
+                text-slate-900 hover:text-slate-200 hover:bg-slate-900">
                   Sign In
                 </Button>
-                <Button onClick={() => router.push('/signup')}>Sign Up</Button>
+                <Button className="" onClick={() => router.push('/signup')}>
+                  Sign Up
+                </Button>
               </>
             )}
           </nav>

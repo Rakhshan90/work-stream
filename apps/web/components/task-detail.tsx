@@ -81,7 +81,7 @@ const TaskDetail = ({ title, description, status, startDate, endDate, priority, 
                     <div className="grid gap-4 py-4">
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="name" className="text-right">
-                                Mark task as
+                                Mark task
                             </Label>
                             <Select onValueChange={(value)=> setStatusVal(value)}>
                                 <SelectTrigger className="w-[180px] border-none bg-slate-800">
