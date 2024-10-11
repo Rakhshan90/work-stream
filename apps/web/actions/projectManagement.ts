@@ -1,6 +1,6 @@
 'use server';
 
-import db from '@repo/db/client';
+import db, { Role } from '@repo/db/client';
 import { projectSchema } from '@repo/validation-schema/zod-schema';
 import { ProjectStatus } from '@repo/db/client';
 import { getServerSession } from 'next-auth';
@@ -112,7 +112,15 @@ export const addEmployeesToProject = async (projectId: number, employeeIds: numb
             where: { id: projectId },
             data: {
                 employees: {
-                    connect: validEmployees.map((employee) => ({ id: employee.id }))
+                    connect: validEmployees.map((employee: {
+                        id: number;
+                        name: string;
+                        password: string;
+                        email: string;
+                        role: Role;
+                        createdAt: Date;
+                        updatedAt: Date;
+                    }) => ({ id: employee.id }))
                 }
             }
         });
