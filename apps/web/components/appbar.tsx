@@ -2,13 +2,12 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { Menu, X, ChevronDown, Layers } from "lucide-react"
+import { Menu, Layers } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { isManager } from "@/actions/userAction";
 import { Role } from "@prisma/client";
 
 export default function AppBar({ role }: { role: Role | null }) {

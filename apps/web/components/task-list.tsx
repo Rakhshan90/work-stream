@@ -2,7 +2,6 @@ import React from 'react'
 import { Card } from './ui/card'
 import TaskDetail from './task-detail'
 import { getAssignedCompletedProjectTasks, getAssignedOngoingProjectTasks, getAssignedPendingProjectTasks, getOverDueTasks, getProjectCompletedTasks, getProjectPendingTasks } from '@/actions/taskManagement'
-import { getRole } from '@/lib/user/userRole'
 import {Role} from '@repo/db/client'
 
 const TaskList = async ({ id, role }: { id: number, role: Role | null }) => {

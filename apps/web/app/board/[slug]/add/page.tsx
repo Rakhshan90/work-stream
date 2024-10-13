@@ -1,6 +1,5 @@
 import MultiSelect from '@/components/add-member'
 import React from 'react'
-import db from '@repo/db/client'
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/config/authOptions';
 import { getUserRole } from '@/lib/user/getUserRole';

@@ -10,10 +10,8 @@ import { Button } from "@/components/ui/button"
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
-    FormLabel,
     FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
@@ -82,7 +80,9 @@ const CreateProject = ({role}: {role: Role | null}) => {
         <div className="flex items-center justify-center px-4 sm:px-6 lg:px-8">
             <Card className="w-full max-w-md bg-slate-900 border-none text-white">
                 <CardHeader>
-                    <CardTitle className="text-3xl font-bold text-center text-blue-600">Create board</CardTitle>
+                    <CardTitle className="text-3xl font-bold text-center text-blue-600">
+                        Create board
+                    </CardTitle>
                     <CardDescription className="text-center text-slate-200">
                         Create your project board
                     </CardDescription>

@@ -3,7 +3,6 @@ import DashboardAppbar from '@/components/dashboard-appbar'
 import Sidebar from '@/components/sidebar'
 import { getEmployeeProjects, getManagerProjects } from '@/lib/project/project';
 import { getUserRole } from '@/lib/user/getUserRole';
-import { getRole } from '@/lib/user/userRole';
 import { getServerSession } from 'next-auth';
 import React from 'react'
 

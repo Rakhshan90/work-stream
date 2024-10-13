@@ -1,7 +1,6 @@
 import { authOptions } from '@/app/config/authOptions';
 import CreateTask from '@/components/create-task';
 import { getUserRole } from '@/lib/user/getUserRole';
-import { getRole } from '@/lib/user/userRole'
 import { getServerSession } from 'next-auth';
 import React from 'react'
 
