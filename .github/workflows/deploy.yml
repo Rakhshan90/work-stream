@@ -28,3 +28,15 @@ jobs:
 
     - name: Verify Pushed Image
       run: docker pull rakhshan007/work-stream:latest  # Replace with your Docker Hub username and repository
+    
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        script: |
+          sudo docker pull rakhshan007/work-stream:latest
+          sudo docker stop web-app || true
+          sudo docker rm web-app || true
+          sudo docker run -d -e DATABASE_URL=${{ secrets.DATABASE_URL }} NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}  --name web-app -p 3005:3000 rakhshan007/work-stream:latest
