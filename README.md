@@ -1,81 +1,90 @@
-# Turborepo starter
+# Work Stream - Project Management Tool
 
-This is an official starter Turborepo.
+A full-stack project management tool designed for seamless task management and team collaboration. Built using Next.js, Prisma ORM, PostgreSQL, Tailwind CSS, Zod, and Next-Auth, this tool allows managers to create projects, assign tasks, and track progress. Employees can manage tasks through a user-friendly dashboard, while role-based access ensures security and proper workflow.
 
-## Using this example
+## Table of Contents
+- [Live Link](#live-link)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Installation](#installation)
+- [Environment Variables](#environment-variables)
+- [Usage](#usage)
+- [Deployment](#deployment)
 
-Run the following command:
+## Live Link
 
-```sh
-npx create-turbo@latest
+
+```bash
+https://workstream.rakhshan.online/
 ```
 
-## What's inside?
+## Features
+- Role-based access for managers and employees.
+- Real-time task assignment and progress tracking.
+- Dashboard for managing projects with pending, ongoing, and   completed task sections.
+- Project timeline and task deadline management.
+- Secure authentication and session management using NextAuth.
 
-This Turborepo includes the following packages/apps:
+## Tech Stack
+- Language: TypeScript
+- Frontend: Next.js, Tailwind CSS, and Shadcn
+- Backend: Next.js, Zod, and Server actions
+- Database: PostgreSQL, Prisma ORM
+- Authentication: NextAuth
+- Monorepo Management: TurboRepo
+- Containerization & Deployment: Docker, AWS (EC2)
 
-### Apps and Packages
+## Installation
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+### 1. Clone the Repository
+First, clone this repository to your local machine:
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
+```bash
+git clone https://github.com/your-username/your-repo-name.git
 ```
-cd my-turborepo
-pnpm build
-```
+### 2. Navigate to the Project Directory
+Change into the project directory:
 
-### Develop
-
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm dev
+```bash
+cd your-repo-name
 ```
 
-### Remote Caching
+### 3. Install Dependencies
+Install the required dependencies using npm:
 
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
+```bash
+pnpm install
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+### 4. Migrate Schema
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
+```bash
+pnpm dlx migrate dev 
 ```
 
-## Useful Links
+### 5. Generate Client
 
-Learn more about the power of Turborepo:
+```bash
+pnpm run db:generate
+```
 
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+## Environment Variables
+Ensure you set up the following environment variables in a .env file at packages/db and at apps/web of the project:
+
+- DATABASE_URL: URL for your PostgreSQL database
+- NEXTAUTH_SECRET: Secret key for NextAuth authentication
+
+## Usage
+
+### 1. Start the Server
+You can start the app by running:
+
+```bash
+pnpm run start-user-app
+```
+
+## Deployment
+
+This project is deployed on AWS using Docker and Github workflows to automate the CI and CD workflow.
+
+
