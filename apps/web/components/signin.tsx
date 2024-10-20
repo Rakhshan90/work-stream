@@ -50,7 +50,7 @@ export default function SignInCard() {
             else {
                 toast({
                     title: "Response",
-                    description: "Either you can create your project or join in existing projects",
+                    description: "Signed in successfully",
                 })
                 setTimeout(() => {
                     setIsLoading(false)

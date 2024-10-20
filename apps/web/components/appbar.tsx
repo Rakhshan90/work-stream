@@ -16,6 +16,13 @@ export default function AppBar({ role }: { role: Role | null }) {
   const session = useSession();
   const authenticated = session.status === 'authenticated';
 
+  const signOutHandler = ()=>{
+    signOut({
+      redirect: false,
+    });
+    router.push('/')
+  }
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-600 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4">
       <div className="container flex h-14 items-center">
@@ -78,7 +85,7 @@ export default function AppBar({ role }: { role: Role | null }) {
           </div>
           <nav className="flex items-center">
             {authenticated ? (
-              <Button onClick={() => signOut()} variant="ghost" className="mr-2 bg-red-600 text-slate-300 hover:text-slate-200 hover:bg-slate-800">
+              <Button onClick={signOutHandler} variant="ghost" className="mr-2 bg-red-600 text-slate-300 hover:text-slate-200 hover:bg-slate-800">
                 Sign Out
               </Button>
             ) : (
