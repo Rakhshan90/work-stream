@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   CircleUserRound,
@@ -15,7 +15,7 @@ import {
   User,
   UserPlus,
   Users,
-} from "lucide-react"
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,10 +29,21 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { signOut } from "next-auth/react"
+} from "@/components/ui/dropdown-menu";
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export function AppbarMenu() {
+
+  const router = useRouter();
+
+  const signoutHandler = async () => {
+    await signOut({
+      redirect: false,
+    });
+    router.push('/');
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild className="cursor-pointer">
@@ -108,12 +119,15 @@ export function AppbarMenu() {
           <span>Support</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator className="bg-slate-600" />
-        <DropdownMenuItem onClick={() => signOut()} className="cursor-pointer focus:bg-red-600 focus:text-slate-200">
+        <DropdownMenuItem
+          onClick={signoutHandler}
+          className="cursor-pointer focus:bg-red-600 focus:text-slate-200"
+        >
           <LogOut className="mr-2 h-4 w-4" />
           <span>Log out</span>
           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }
