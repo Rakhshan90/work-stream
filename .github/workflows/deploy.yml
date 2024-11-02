@@ -36,7 +36,8 @@ jobs:
         username: ${{ secrets.SSH_USERNAME }}
         key: ${{ secrets.SSH_KEY }}
         script: |
-          sudo docker pull rakhshan007/work-stream:latest
           sudo docker stop web-app || true
           sudo docker rm web-app || true
+          sudo docker rmi rakhshan007/work-stream:latest
+          sudo docker pull rakhshan007/work-stream:latest
           sudo docker run -d -e DATABASE_URL=${{ secrets.DATABASE_URL }} -e NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }} --name web-app -p 3005:3000 rakhshan007/work-stream:latest
